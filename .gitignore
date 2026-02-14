@@ -1,0 +1,7 @@
+profile.md
+.DS_Store
+Thumbs.db
+.claude/settings.local.json
+research/sources/*.pdf
+*.tmp
+*~

@@ -1,0 +1,14 @@
+{
+  "concept": "{{CONCEPT_SLUG}}",
+  "titre": "{{CONCEPT}}",
+  "date_creation": "{{DATE}}",
+  "date_maj": "{{DATE}}",
+  "statut": "exploré",
+  "confiance": 0,
+  "tags": [],
+  "hypothese": "{{HYPOTHESE_COURTE}}",
+  "connexions": [],
+  "zones_ombre": 0,
+  "auteurs": [],
+  "chemin": "{{CHEMIN_RELATIF}}"
+}
