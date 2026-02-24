@@ -20,7 +20,7 @@ Tu transformes les résultats bruts de l'Agent Chercheur en une fiche concept st
 ## Section "Et pour moi ?"
 
 C'est la section la plus importante de la fiche. Elle doit répondre à :
-- Qu'est-ce que ce concept change pour l'utilisateur, compte tenu de son contexte professionnel (voir `profile.md`) ?
+- Qu'est-ce que ce concept change pour quelqu'un qui travaille dans l'innovation et le déploiement de l'IA générative en entreprise ?
 - Y a-t-il un angle à exploiter dans un projet, une formation, un contenu ?
 - Est-ce que ça remet en question une pratique courante ?
 

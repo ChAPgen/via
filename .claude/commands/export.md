@@ -1,6 +1,8 @@
 # /export — Exporter une fiche ou un mémo en PDF
 
-Génère un PDF propre à partir d'une fiche concept ou d'un mémo.
+Génère un PDF professionnel brandé Future Path à partir d'une fiche concept ou d'un mémo.
+
+**Cette commande utilise la skill `export-pdf`** (`.claude/skills/export-pdf/`) pour le nettoyage, l'injection YAML et la compilation. Lis le `SKILL.md` de la skill pour les détails du workflow de conversion.
 
 ## Paramètres
 
@@ -12,30 +14,28 @@ Exemples :
 - `/export "research/memos/2026-02-07_productivite_exploration.md"` → exporte ce mémo en PDF
 - `/export "productivité" "all"` → exporte la fiche + tous les mémos liés en un seul PDF
 
-## Prérequis : pandoc
+## Prérequis
 
-Ce workflow utilise `pandoc` pour la conversion markdown → PDF.
+Ce workflow utilise `pandoc` + `xelatex` avec le template Future Path.
 
 ### Vérification
-Avant toute conversion, vérifie que pandoc est installé :
+Avant toute conversion, vérifie que les outils sont installés :
 ```bash
 pandoc --version
+xelatex --version
 ```
 
-### Si pandoc n'est pas installé
-Informe l'utilisateur et propose l'installation :
-- **macOS** : `brew install pandoc` et `brew install --cask basictex` (pour le moteur LaTeX)
-- **Ubuntu/Debian** : `sudo apt install pandoc texlive-latex-recommended`
-- **Windows** : `winget install pandoc` ou télécharger depuis https://pandoc.org
+### Si les prérequis manquent
+Consulte `.claude/skills/export-pdf/references/install.md` pour les instructions d'installation complètes (pandoc, BasicTeX, packages LaTeX nécessaires).
 
-Si l'utilisateur ne veut pas installer pandoc, propose l'alternative : "Tu peux m'uploader le fichier .md sur claude.ai et je te génèrerai un PDF avec une mise en page soignée."
+Si l'utilisateur ne veut pas installer les prérequis, propose l'alternative : "Tu peux m'uploader le fichier .md sur claude.ai et je te génèrerai un PDF avec une mise en page soignée."
 
 ## Workflow
 
 ### Étape 1 — Identification de la cible
 - Si c'est un nom de concept : cherche dans `research/index.json`, récupère le champ `chemin` qui pointe vers le fichier dans son dossier mensuel (ex : `research/2026-02/2026-02-07_productivite.md`)
 - Si c'est un chemin direct : vérifie que le fichier existe (peut être dans `research/YYYY-MM/` ou `research/memos/`)
-- Si format = `all` : récupère la fiche depuis son dossier mensuel ET tous les mémos dans `research/memos/` dont le nom contient le slug du concept (ex : `research/memos/2026-02-09_productivite_publish-linkedin.md`)
+- Si format = `all` : récupère la fiche depuis son dossier mensuel ET tous les mémos dans `research/memos/` dont le nom contient le slug du concept
 
 ### Étape 2 — Préparation
 - Crée le dossier `exports/` à la racine du projet s'il n'existe pas
@@ -43,37 +43,40 @@ Si l'utilisateur ne veut pas installer pandoc, propose l'alternative : "Tu peux 
   - Exemple : `2026-02-07_productivite_fiche.pdf`
   - Pour `all` : `2026-02-07_productivite_complet.pdf`
 
-### Étape 3 — Nettoyage du markdown pour export
-- Copie le fichier source dans un fichier temporaire
-- Retire les marqueurs internes qui ne doivent pas apparaître dans un PDF public :
-  - Les lignes de template `{{...}}`
-  - Les commentaires `<!-- TODO -->`
-- Conserve les marqueurs `[⚠️]` — ils sont importants pour la traçabilité
-- Si format = `all`, concatène les fichiers avec un saut de page entre chaque (`\newpage`)
+### Étape 3 — Nettoyage et injection YAML (via la skill export-pdf)
 
-### Étape 4 — Conversion
+Suivre les étapes 1 à 3 de la skill `export-pdf` (`SKILL.md`) :
+
+1. **Analyser le fichier source** : extraire titre, date, sujet
+2. **Nettoyer le markdown** :
+   - Supprimer les sections : `## Journal`, `## Connexions`, `## Concepts connexes à explorer`, `## Et pour moi ?`
+   - Supprimer les lignes/bullets contenant `⚠️` et les `[⚠️ ...]`
+   - Supprimer la ligne de métadonnées blockquote (`> Date : ... | Statut : ...`)
+   - Supprimer les lignes de template `{{...}}` et les commentaires `<!-- TODO -->`
+3. **Injecter le front-matter YAML** avec titre, subtitle (si section "En une phrase" existe), subject, date, author, logo, toc
+
+Si format = `all`, concatène les fichiers nettoyés avec un saut de page entre chaque (`\newpage`). Le front-matter YAML n'est injecté qu'une seule fois en tête du fichier concaténé.
+
+### Étape 4 — Compilation PDF
+
+Les chemins vers le template et le logo sont relatifs à la racine du projet :
+
 ```bash
-pandoc temp_source.md \
-  -o exports/YYYY-MM-DD_concept_type.pdf \
+pandoc "<fichier-nettoyé>.md" \
+  -o "exports/YYYY-MM-DD_concept_type.pdf" \
   --pdf-engine=xelatex \
-  -V geometry:margin=2.5cm \
-  -V fontsize=11pt \
-  -V mainfont="Helvetica" \
-  -V documentclass=article \
-  -V colorlinks=true \
-  -V linkcolor=blue \
-  -V urlcolor=blue \
-  --highlight-style=tango
+  --template=".claude/skills/export-pdf/assets/my-org-template.tex" \
+  --highlight-style=zenburn
 ```
 
-Note : avec pandoc + xelatex, les liens markdown `[texte](url)` sont cliquables dans le PDF. Si l'utilisateur veut aussi que les URLs s'affichent en clair (utile pour l'impression), pré-traiter le markdown pour transformer `[texte](url)` en `texte (url)` avant la conversion.
-
-Si xelatex n'est pas disponible, essayer avec le moteur par défaut :
-```bash
-pandoc temp_source.md -o exports/YYYY-MM-DD_concept_type.pdf -V geometry:margin=2.5cm
+Le logo dans le front-matter YAML doit pointer vers :
+```yaml
+logo: ".claude/skills/export-pdf/assets/my-org-logo.png"
 ```
 
-Si la conversion échoue, informer l'utilisateur du problème exact et suggérer l'alternative claude.ai.
+Note : avec pandoc + xelatex, les liens markdown `[texte](url)` sont cliquables dans le PDF.
+
+Si la conversion échoue, consulter la table de gestion des erreurs dans le `SKILL.md` de la skill, puis informer l'utilisateur du problème exact.
 
 ### Étape 5 — Nettoyage et rapport
 - Supprime le fichier temporaire

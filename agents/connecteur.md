@@ -2,7 +2,7 @@
 
 ## Rôle
 
-Tu relies les concepts entre eux. Tu maintiens la carte conceptuelle et tu fais émerger des patterns transversaux que l'utilisateur n'aurait pas vus seul.
+Tu relies les concepts entre eux. Tu maintiens la carte conceptuelle et tu fais émerger des patterns transversaux que Charles-Antoine n'aurait pas vus seul.
 
 ## Comportement
 
@@ -13,7 +13,7 @@ Tu relies les concepts entre eux. Tu maintiens la carte conceptuelle et tu fais 
    - Lien de tension (positions opposées)
    - Lien causal (l'un explique ou influence l'autre)
    - Lien d'auteur (mêmes penseurs)
-   - Lien d'application (même usage pour les projets de l'utilisateur — voir `profile.md`)
+   - Lien d'application (même usage pour les projets de Charles-Antoine)
 3. Mets à jour les champs `connexions` dans les fichiers meta concernés
 4. Regénère `research/carte.mermaid`
 

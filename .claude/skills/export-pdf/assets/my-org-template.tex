@@ -1,0 +1,341 @@
+% ============================================================================
+% Template Pandoc/XeLaTeX pour publications PDF
+% ============================================================================
+% Usage : pandoc input.md -o output.pdf --pdf-engine=xelatex --template=my-org-template.tex
+%
+% VARIABLES PANDOC (à mettre dans le YAML front-matter du .md) :
+%   title:       Titre de la publication
+%   subtitle:    Sous-titre (optionnel)
+%   subject:     Sujet affiché dans le header (ex: "Méta-Cognition")
+%   date:        Date ISO (ex: 2026-02-09)
+%   author:      Auteur (optionnel)
+%   logo:        Chemin vers le logo (ex: ./my-org-logo.png)
+%   confidential: true/false — affiche "CONFIDENTIEL" si true
+%
+% PERSONNALISATION :
+%   Cherchez les sections marquées %% EDITABLE ci-dessous
+% ============================================================================
+
+\documentclass[11pt, a4paper]{article}
+
+% ── Encodage & langue ──────────────────────────────────────────────────────
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setdefaultlanguage{french}
+
+% ── Polices ────────────────────────────────────────────────────────────────
+%% EDITABLE : Polices
+%% Sur macOS, Avenir Next est disponible nativement.
+%% Si non disponible, remplacez par une autre sans-serif (ex: Helvetica Neue)
+
+\setmainfont{Avenir Next}[
+  BoldFont       = Avenir Next Bold,
+  ItalicFont     = Avenir Next Italic,
+  BoldItalicFont = Avenir Next Bold Italic,
+]
+
+% Police pour les titres de section (Avenir Next Demi Bold)
+\newfontfamily\sectionfont{Avenir Next Demi Bold}[
+  BoldFont       = Avenir Next Bold,
+]
+
+% Police pour le titre de la publication (Avenir Next Heavy)
+\newfontfamily\titlefont{Avenir Next Heavy}[
+  BoldFont       = Avenir Next Heavy,
+]
+
+% Police mono (sans-serif non proportionnelle) pour les liens et le code
+%% EDITABLE : Changez par votre mono préférée (Fira Code, SF Mono, etc.)
+\setmonofont{Menlo}[
+  Scale=0.88,
+]
+
+% ── Couleurs ───────────────────────────────────────────────────────────────
+\usepackage{xcolor}
+
+%% EDITABLE : Palette de couleurs Future Path
+\definecolor{fp-primary}{HTML}{1B2A4A}     % Bleu nuit — titres, texte principal
+\definecolor{fp-accent}{HTML}{2D7DD2}      % Bleu vif — accents, liens
+\definecolor{fp-accent-light}{HTML}{E8F1FB} % Bleu très clair — fonds
+\definecolor{fp-gray}{HTML}{6B7280}        % Gris — texte secondaire
+\definecolor{fp-lightgray}{HTML}{F3F4F6}   % Gris très clair — fonds de code
+\definecolor{fp-dark}{HTML}{111827}        % Quasi-noir — texte courant
+\definecolor{fp-rule}{HTML}{D1D5DB}        % Gris moyen — lignes
+
+% ── Mise en page ───────────────────────────────────────────────────────────
+\usepackage[
+  top=3cm,
+  bottom=3cm,
+  left=2.5cm,
+  right=2.5cm,
+  headheight=1.5cm,
+  headsep=0.8cm,
+  footskip=1.5cm,
+]{geometry}
+
+\usepackage{parskip}          % Espacement entre paragraphes, pas d'indentation
+\setlength{\parskip}{0.6em}
+
+% ── Line wrapping & césure ────────────────────────────────────────────────
+% Microtype : améliore le justifié (protrusion + expansion des caractères)
+\usepackage{microtype}
+
+% Permet à TeX d'étirer les espaces en cas d'urgence plutôt que de dépasser
+\setlength{\emergencystretch}{3em}
+
+% Encourage la césure pour éviter les overfull hbox
+\tolerance=1000
+\hbadness=2000
+\hfuzz=0.5pt
+
+% URLs et liens longs : cassure autorisée
+% xurl préféré si disponible, sinon url suffit
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{\usepackage{url}}
+\urlstyle{tt}
+
+% ── Graphiques ─────────────────────────────────────────────────────────────
+\usepackage{graphicx}
+\usepackage{float}
+
+% ── Tableaux ───────────────────────────────────────────────────────────────
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+\IfFileExists{multirow.sty}{\usepackage{multirow}}{}
+\usepackage{colortbl}
+
+% Style des tableaux
+\arrayrulecolor{fp-rule}
+\renewcommand{\arraystretch}{1.4}
+
+% ── Listes ─────────────────────────────────────────────────────────────────
+\IfFileExists{enumitem.sty}{%
+  \usepackage{enumitem}
+  \setlist[itemize]{
+    leftmargin=1.5em,
+    itemsep=0.3em,
+    parsep=0.1em,
+    label=\textcolor{fp-accent}{\textbullet},
+  }
+  \setlist[enumerate]{
+    leftmargin=1.5em,
+    itemsep=0.3em,
+    parsep=0.1em,
+  }
+}{}
+
+% ── Blocs de code ──────────────────────────────────────────────────────────
+\usepackage{fancyvrb}
+\IfFileExists{framed.sty}{\usepackage{framed}}{}
+
+% Fond pour les blocs de code (utilisé par Pandoc)
+\definecolor{shadecolor}{HTML}{F3F4F6}
+\newenvironment{Shaded}{
+  \begin{snugshade}
+}{
+  \end{snugshade}
+}
+
+% ── Liens ──────────────────────────────────────────────────────────────────
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=fp-primary,
+  urlcolor=fp-accent,
+  citecolor=fp-accent,
+  pdfauthor={$if(author)$$author$$else$Future Path$endif$},
+  pdftitle={$if(title)$$title$$endif$},
+  pdfsubject={$if(subject)$$subject$$endif$},
+}
+
+% ── En-têtes & pieds de page ──────────────────────────────────────────────
+\usepackage{fancyhdr}
+\IfFileExists{lastpage.sty}{\usepackage{lastpage}}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+
+%% EDITABLE : Contenu des headers/footers
+% Header
+\fancyhead[L]{%
+  \small\color{fp-gray}\textit{$if(subject)$$subject$$else$$if(title)$$title$$endif$$endif$}%
+}
+\fancyhead[R]{%
+  $if(logo)$\raisebox{-0.3\height}{\includegraphics[height=0.9cm]{$logo$}}$endif$%
+}
+
+% Footer
+\fancyfoot[L]{%
+  \small\color{fp-gray}Une étude Future Path%
+}
+\fancyfoot[C]{%
+  \small\color{fp-gray}\thepage\IfFileExists{lastpage.sty}{\,/\,\pageref{LastPage}}{}%
+}
+\fancyfoot[R]{%
+  \small\color{fp-gray}$if(date)$$date$$endif$%
+}
+
+% Ligne de séparation
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{fp-rule}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrule}{\hbox to\headwidth{\color{fp-rule}\leaders\hrule height \footrulewidth\hfill}\vskip 0.5em}
+
+% Style pour la première page (page de garde)
+\fancypagestyle{coverpage}{
+  \fancyhf{}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+}
+
+% ── Titres de section ──────────────────────────────────────────────────────
+\usepackage{titlesec}
+
+%% EDITABLE : Style des titres
+\titleformat{\section}
+  {\sectionfont\Large\bfseries\color{fp-primary}}
+  {\thesection}{0.8em}{}
+  [\vspace{-0.3em}{\color{fp-accent}\hrule height 1.5pt}\vspace{0.3em}]
+
+\titleformat{\subsection}
+  {\sectionfont\large\bfseries\color{fp-primary}}
+  {\thesubsection}{0.6em}{}
+
+\titleformat{\subsubsection}
+  {\sectionfont\normalsize\bfseries\color{fp-accent}}
+  {\thesubsubsection}{0.5em}{}
+
+\titlespacing*{\section}{0pt}{1.8em}{0.8em}
+\titlespacing*{\subsection}{0pt}{1.4em}{0.5em}
+\titlespacing*{\subsubsection}{0pt}{1em}{0.3em}
+
+% ── Blockquotes ────────────────────────────────────────────────────────────
+% Redéfinition du style des blockquotes (citations > en Markdown)
+\usepackage{mdframed}
+\renewenvironment{quote}{%
+  \begin{mdframed}[
+    linewidth=3pt,
+    linecolor=fp-accent,
+    leftline=true,
+    rightline=false,
+    topline=false,
+    bottomline=false,
+    innerleftmargin=1em,
+    innerrightmargin=0.5em,
+    innertopmargin=0.5em,
+    innerbottommargin=0.5em,
+    backgroundcolor=fp-accent-light,
+    fontcolor=fp-gray,
+  ]\itshape
+}{%
+  \end{mdframed}%
+}
+
+% ── Divers ─────────────────────────────────────────────────────────────────
+% Éviter les veuves et orphelines
+\widowpenalty=10000
+\clubpenalty=10000
+
+% Pandoc tight list support
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% Images : taille max = largeur texte
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\makeatother
+
+% Profondeur de la table des matières
+$if(toc)$
+\setcounter{tocdepth}{$if(toc-depth)$$toc-depth$$else$2$endif$}
+$endif$
+
+% Numérotation des sections
+$if(numbersections)$
+\setcounter{secnumdepth}{$if(secnumdepth)$$secnumdepth$$else$3$endif$}
+$else$
+\setcounter{secnumdepth}{-1}
+$endif$
+
+% ============================================================================
+% DOCUMENT
+% ============================================================================
+\begin{document}
+
+% ── Page de garde ──────────────────────────────────────────────────────────
+\thispagestyle{coverpage}
+
+\begin{center}
+
+\vspace*{2cm}
+
+% Logo
+$if(logo)$
+\includegraphics[width=5cm]{$logo$}
+\vspace{1.5cm}
+$else$
+\vspace{2cm}
+$endif$
+
+% Ligne décorative supérieure
+{\color{fp-accent}\hrule height 2pt}
+\vspace{1.2cm}
+
+% Titre
+{\titlefont\fontsize{32}{38}\selectfont\color{fp-primary}
+$if(title)$$title$$endif$
+}
+
+\vspace{0.6cm}
+
+% Sous-titre
+$if(subtitle)$
+{\sectionfont\Large\color{fp-gray}
+$subtitle$
+}
+\vspace{0.8cm}
+$endif$
+
+% Ligne décorative inférieure
+{\color{fp-accent}\hrule height 2pt}
+
+\vspace{2cm}
+
+% Métadonnées
+$if(author)$
+{\large\color{fp-gray} $author$}
+\vspace{0.5cm}
+$endif$
+
+$if(date)$
+{\large\color{fp-gray} $date$}
+$endif$
+
+$if(confidential)$
+\vspace{1cm}
+{\Large\color{red}\bfseries CONFIDENTIEL}
+$endif$
+
+\vfill
+
+% Pied de page de garde
+{\small\color{fp-gray}
+Future Path — Intelligence stratégique \& Innovation
+}
+
+\end{center}
+\newpage
+
+% ── Table des matières ─────────────────────────────────────────────────────
+$if(toc)$
+{
+\hypersetup{linkcolor=fp-primary}
+\setcounter{tocdepth}{$if(toc-depth)$$toc-depth$$else$2$endif$}
+\tableofcontents
+\newpage
+}
+$endif$
+
+% ── Contenu ────────────────────────────────────────────────────────────────
+$body$
+
+\end{document}

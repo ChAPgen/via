@@ -55,6 +55,12 @@ exports/              ← PDFs générés par /export
 - Le niveau de confiance va de 1 (exploré superficiellement) à 5 (validé par l'humain)
 - La date du jour doit être récupérée automatiquement
 
+## Custom Commands
+All /explore, /deepen, /publish, /export, and /delta commands require a concept argument. If no argument is provided, prompt the user immediately rather than proceeding with an empty target.
+
+## File Updates After Content Generation
+After generating or updating any concept fiche, always update these files in order: (1) the fiche's meta block, (2) index.json, (3) index.md. Never skip the index updates.
+
 ## Workflow des commandes
 
 0. `/init` → Crée le profil utilisateur (`profile.md`) via un dialogue interactif
