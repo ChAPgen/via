@@ -2,6 +2,10 @@
 
 Génère un PDF professionnel brandé Future Path à partir d'une fiche concept ou d'un mémo.
 
+## Modèle recommandé
+
+**Haiku** suffit — Travail mécanique : nettoyage markdown, injection YAML, compilation pandoc. Pas besoin de capacités avancées.
+
 **Cette commande utilise la skill `export-pdf`** (`.claude/skills/export-pdf/`) pour le nettoyage, l'injection YAML et la compilation. Lis le `SKILL.md` de la skill pour les détails du workflow de conversion.
 
 ## Paramètres

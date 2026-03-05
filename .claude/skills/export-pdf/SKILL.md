@@ -88,7 +88,7 @@ pandoc "<fichier-nettoyé>.md" \
   -o "<nom-sortie>.pdf" \
   --pdf-engine=xelatex \
   --template="<chemin>/my-org-template.tex" \
-  --highlight-style=zenburn
+  --syntax-highlighting=zenburn
 ```
 
 **Conventions de nommage du fichier de sortie** :

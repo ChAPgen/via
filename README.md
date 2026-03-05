@@ -7,14 +7,14 @@ Un système d'exploration intellectuelle augmentée par [Claude Code](https://do
 ## Prérequis
 
 - **Claude Code** : installé et fonctionnel ([documentation](https://docs.anthropic.com/en/docs/claude-code))
-- **pandoc** (optionnel) : pour la commande `/export` (`brew install pandoc` sur macOS)
+- **pandoc + XeLaTeX** (optionnel) : pour la commande `/export` (voir `.claude/skills/export-pdf/references/install.md`)
 
 ---
 
 ## Démarrage rapide
 
 ```bash
-git clone <url-du-repo> via
+git clone https://github.com/ChAPgen/via.git
 cd via
 claude
 ```
@@ -40,23 +40,36 @@ Le système vous pose quelques questions pour créer votre profil (`profile.md`)
 | `/init` | Configurer votre profil (identité, contexte, canaux de publication) |
 | `/explore "concept" "périmètre" "hypothèse"` | Explorer un nouveau concept en profondeur |
 | `/deepen "concept"` | Approfondir un concept déjà exploré |
+| `/compare "concept-a" "concept-b"` | Analyse comparative de deux concepts |
 | `/connect` | Cartographier les liens entre tous vos concepts |
-| `/publish "concept" "canal"` | Produire un contenu éditorial (newsletter, blog, linkedin, linkedin-carousel) |
+| `/publish "concept" "canal"` | Produire un contenu éditorial |
 | `/index` | Afficher l'état de votre bibliothèque |
 | `/export "concept"` | Générer un PDF via pandoc |
+
+**Canaux disponibles pour `/publish`** : `newsletter` | `blog` | `linkedin` | `linkedin-carousel`
 
 ---
 
 ## Comment ça marche
 
-### 4 agents spécialisés
+### 5 agents spécialisés
 
 Chaque commande orchestre des agents qui ont chacun un rôle précis :
 
-- **Chercheur** — Recherche web, collecte de sources, exploration du concept
+- **Cadreur** — Produit un briefing expert du domaine avant la recherche (auteurs clés, débats, pièges)
+- **Chercheur** — Recherche web avec budget adaptatif, guidée par le briefing du Cadreur
 - **Synthétiseur** — Transforme la recherche brute en fiche structurée
-- **Juge** — Vérifie la qualité, l'exactitude et l'honnêteté de chaque production
+- **Juge** — Vérifie la qualité, l'exactitude, l'honnêteté et la couverture de chaque production
 - **Connecteur** — Relie les concepts entre eux, détecte des patterns
+
+### Workflow type
+
+```
+/explore :  Cadreur → Chercheur → Synthétiseur → Juge → Fiche
+/deepen :   Cadreur → Chercheur (ciblé) → Synthétiseur → Connecteur → Juge → Fiche mise à jour
+/compare :  Chargement des deux fiches → Analyse croisée → Mémo
+/publish :  Fiche + profil + template canal → Contenu éditorial → Juge
+```
 
 ### Honnêteté intellectuelle
 
@@ -69,15 +82,16 @@ Le principe fondateur du système : **"Mieux vaut un trou qu'un mensonge."**
 | 3 — Flou | Ambiguïté, plusieurs interprétations | Question posée à l'utilisateur |
 | 4 — Absent | Rien de fiable trouvé | Dit explicitement |
 
-Lors de la publication (`/publish`), aucune information incertaine n'est transformée en affirmation. Les éléments douteux sont omis ou présentés comme questions ouvertes.
+Lors de la publication (`/publish`), aucune information incertaine n'est transformée en affirmation.
 
 ### Le cycle recommandé
 
 1. **Explorez** un concept qui vous intéresse
 2. **Lisez la fiche** — si des zones d'ombre vous intriguent, lancez `/deepen`
 3. **Explorez** des concepts adjacents suggérés
-4. **Connectez** régulièrement (tous les 3-4 concepts)
-5. **Publiez** quand vous avez une fiche solide (confiance ≥ 3)
+4. **Comparez** deux concepts pour faire émerger des insights croisés
+5. **Connectez** régulièrement (tous les 3-4 concepts)
+6. **Publiez** quand vous avez une fiche solide (confiance ≥ 3)
 
 ---
 
@@ -85,39 +99,46 @@ Lors de la publication (`/publish`), aucune information incertaine n'est transfo
 
 ```
 .
-├── profile.md              ← votre profil (créé par /init, gitignored)
-├── profile.example.md      ← modèle de profil
-├── CLAUDE.md               ← instructions système
-├── README.md               ← ce fichier
-├── LICENSE                  ← MIT
-├── .gitignore
+├── profile.md                  ← votre profil (créé par /init, gitignored)
+├── profile.example.md          ← modèle de profil
+├── CLAUDE.md                   ← instructions système
+├── CHANGELOG.md                ← historique des versions
 ├── .claude/
-│   └── commands/           ← les commandes
-│       ├── init.md
-│       ├── explore.md
-│       ├── deepen.md
-│       ├── connect.md
-│       ├── publish.md
-│       ├── index.md
-│       └── export.md
-├── agents/                 ← instructions de chaque agent
-│   ├── chercheur.md
-│   ├── synthetiseur.md
-│   ├── juge.md
-│   └── connecteur.md
-├── templates/              ← modèles de documents
-│   ├── fiche.md
-│   ├── meta.json
-│   └── memo.md
-├── inputs/                 ← fichiers fournis par l'utilisateur
-├── exports/                ← PDFs générés par /export
-└── research/               ← tout le contenu produit
-    ├── index.json          ← catalogue machine
-    ├── index.md            ← catalogue lisible
-    ├── carte.mermaid       ← graphe des connexions
-    ├── memos/              ← notes de réflexion
-    ├── sources/            ← PDFs et documents de référence
-    └── YYYY-MM/            ← fiches par mois
+│   ├── agents/                 ← instructions de chaque agent
+│   │   ├── cadreur.md
+│   │   ├── chercheur.md
+│   │   ├── synthetiseur.md
+│   │   ├── juge.md
+│   │   └── connecteur.md
+│   ├── commands/               ← les commandes
+│   │   ├── init.md
+│   │   ├── explore.md
+│   │   ├── deepen.md
+│   │   ├── compare.md
+│   │   ├── connect.md
+│   │   ├── publish.md
+│   │   ├── index.md
+│   │   └── export.md
+│   └── skills/
+│       └── export-pdf/         ← skill d'export PDF (template, logo, refs)
+├── templates/
+│   ├── fiche.md                ← modèle de fiche concept
+│   ├── memo.md                 ← modèle de mémo
+│   ├── meta.json               ← modèle de métadonnées
+│   └── canaux/                 ← templates par canal de publication
+│       ├── newsletter.md
+│       ├── blog.md
+│       ├── linkedin.md
+│       └── linkedin-carousel.md
+├── inputs/                     ← fichiers fournis par l'utilisateur
+├── exports/                    ← PDFs générés par /export
+└── research/                   ← tout le contenu produit
+    ├── index.json              ← catalogue machine
+    ├── index.md                ← catalogue lisible
+    ├── carte.mermaid           ← graphe des connexions
+    ├── memos/                  ← notes de réflexion et analyses comparatives
+    ├── sources/                ← PDFs et documents de référence
+    └── YYYY-MM/                ← fiches par mois
         ├── DATE_concept.md
         └── DATE_concept_meta.json
 ```
@@ -132,11 +153,15 @@ Votre profil (`profile.md`) contient votre contexte professionnel et vos canaux 
 
 ### Canaux de publication
 
-Les canaux (newsletter, blog, LinkedIn, carrousel) sont configurés dans votre profil et utilisés par `/publish`. Vous pouvez aussi ajuster les contraintes détaillées dans `.claude/commands/publish.md`.
+Chaque canal a son template dans `templates/canaux/`. Pour ajouter un canal personnalisé, créez un nouveau fichier `.md` dans ce dossier en suivant la structure des templates existants (format, ton, structure, à ne pas faire).
 
 ### Templates
 
 Les modèles de fiches et mémos sont dans `templates/`. Adaptez-les à vos besoins.
+
+### Agents
+
+Les instructions de chaque agent sont dans `.claude/agents/`. Vous pouvez les ajuster pour modifier le comportement du système (par exemple, changer les critères d'arrêt du Chercheur ou les axes de vérification du Juge).
 
 ---
 
@@ -156,7 +181,7 @@ Aucun accès réseau sortant autre que la recherche web. Aucune commande destruc
 Les contributions sont les bienvenues. Quelques pistes :
 
 - Améliorer les agents (prompts plus précis, meilleure vérification)
-- Ajouter de nouveaux canaux de publication
+- Ajouter de nouveaux canaux de publication (créer un template dans `templates/canaux/`)
 - Proposer de nouveaux templates de fiches
 - Améliorer la détection de patterns par le Connecteur
 

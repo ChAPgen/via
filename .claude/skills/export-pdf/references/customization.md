@@ -166,7 +166,7 @@ Les blockquotes Markdown (`> texte`) sont rendues avec une barre latérale bleue
 
 ## Coloration syntaxique des blocs de code
 
-Contrôlée par l'option Pandoc `--highlight-style`. Choix disponibles :
+Contrôlée par l'option Pandoc `--syntax-highlighting`. Choix disponibles :
 - `zenburn` — sombre, doux (recommandé)
 - `tango` — coloré, lisible
 - `espresso` — sombre, contrasté

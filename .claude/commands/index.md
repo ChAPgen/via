@@ -2,6 +2,10 @@
 
 Regénère le fichier `research/index.md` à partir de `research/index.json` et l'affiche.
 
+## Modèle recommandé
+
+**Haiku** suffit — Simple regénération de markdown depuis un JSON structuré.
+
 ## Paramètres
 
 Aucun.

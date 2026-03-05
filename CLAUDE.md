@@ -30,8 +30,10 @@ Défini dans `profile.md` (section "Contexte professionnel"). Les recherches son
 ```
 profile.md            ← profil utilisateur (créé par /init, gitignored)
 profile.example.md    ← modèle de profil
-.claude/commands/     ← commandes utilisateur (/init, /explore, /deepen, /connect, /publish, /index)
-agents/               ← instructions détaillées de chaque agent
+.claude/
+  commands/           ← commandes utilisateur (/init, /explore, /deepen, /connect, /publish, /compare, /index, /export)
+  agents/             ← instructions détaillées de chaque agent (cadreur, chercheur, synthetiseur, juge, connecteur)
+  skills/             ← skills spécialisées (export-pdf)
 research/             ← tout le contenu produit
   index.json          ← catalogue machine (source de vérité)
   index.md            ← catalogue humain (généré automatiquement)
@@ -41,7 +43,8 @@ research/             ← tout le contenu produit
     DATE_concept_meta.json ← métadonnées pour les agents
   memos/              ← notes de réflexion (nommées YYYY-MM-DD_concept_contexte.md)
   sources/            ← PDFs et documents de référence
-templates/            ← modèles de fiches et memos
+templates/            ← modèles de fiches, memos et canaux de publication
+  canaux/             ← templates par canal (newsletter, blog, linkedin, linkedin-carousel)
 inputs/               ← fichiers fournis par l'utilisateur
 exports/              ← PDFs générés par /export
 ```
@@ -56,7 +59,7 @@ exports/              ← PDFs générés par /export
 - La date du jour doit être récupérée automatiquement
 
 ## Custom Commands
-All /explore, /deepen, /publish, /export, and /delta commands require a concept argument. If no argument is provided, prompt the user immediately rather than proceeding with an empty target.
+All /explore, /deepen, /publish, /export, /compare, and /delta commands require a concept argument. If no argument is provided, prompt the user immediately rather than proceeding with an empty target.
 
 ## File Updates After Content Generation
 After generating or updating any concept fiche, always update these files in order: (1) the fiche's meta block, (2) index.json, (3) index.md. Never skip the index updates.
@@ -64,13 +67,14 @@ After generating or updating any concept fiche, always update these files in ord
 ## Workflow des commandes
 
 0. `/init` → Crée le profil utilisateur (`profile.md`) via un dialogue interactif
-1. `/explore "concept" "périmètre" "hypothèse"` → Agent Chercheur → Agent Synthétiseur → Agent Juge → Fiche + Meta + Index mis à jour
-2. `/deepen "concept"` → Reprend une fiche existante, approfondit → Agent Chercheur (ciblé) → Agent Connecteur → Agent Juge → Fiche mise à jour
+1. `/explore "concept" "périmètre" "hypothèse"` → Agent Cadreur → Agent Chercheur → Agent Synthétiseur → Agent Juge → Fiche + Meta + Index mis à jour
+2. `/deepen "concept"` → Reprend une fiche existante → Agent Cadreur → Agent Chercheur (ciblé) → Agent Synthétiseur → Agent Connecteur → Agent Juge → Fiche mise à jour
 3. `/connect` → Agent Connecteur lit toutes les metas → met à jour carte.mermaid et les connexions dans les fiches
-4. `/publish "concept" "canal"` → Lit la fiche + `profile.md` → Produit un contenu adapté au canal défini dans le profil
-5. `/index` → Regénère index.md depuis index.json et l'affiche
-6. `/export "concept"` → Génère un PDF propre via pandoc (fiche, mémo, ou tout)
+4. `/publish "concept" "canal"` → Lit la fiche + `profile.md` + template de canal → Produit un contenu adapté
+5. `/compare "concept-a" "concept-b"` → Charge les deux fiches → Analyse comparative → Mémo structuré
+6. `/index` → Regénère index.md depuis index.json et l'affiche
+7. `/export "concept"` → Génère un PDF propre via pandoc (fiche, mémo, ou tout)
 
 ## Agents
 
-Les instructions détaillées de chaque agent sont dans `agents/`. Chaque commande orchestre les agents dans l'ordre approprié. Tous les agents respectent la règle d'honnêteté intellectuelle.
+Les instructions détaillées de chaque agent sont dans `.claude/agents/`. Chaque commande orchestre les agents dans l'ordre approprié. Tous les agents respectent la règle d'honnêteté intellectuelle.

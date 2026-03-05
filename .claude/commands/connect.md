@@ -2,6 +2,10 @@
 
 Analyse tous les concepts explorés et met à jour la carte des connexions.
 
+## Modèle recommandé
+
+**Sonnet** suffit — Travail analytique de pattern matching entre métadonnées existantes, sans recherche web.
+
 ## Paramètres
 
 Aucun paramètre obligatoire. Optionnellement, l'utilisateur peut spécifier deux concepts pour explorer leur lien spécifique.
@@ -18,7 +22,7 @@ Exemples :
 - Charge tous les fichiers `_meta.json`
 
 ### Étape 2 — Analyse des liens (Agent Connecteur)
-- Lis les instructions dans `agents/connecteur.md`
+- Lis les instructions dans `.claude/agents/connecteur.md`
 - Si analyse globale : évalue toutes les paires de concepts
 - Si lien spécifique : analyse en détail la relation entre les deux concepts donnés
 

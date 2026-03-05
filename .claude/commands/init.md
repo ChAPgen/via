@@ -2,6 +2,10 @@
 
 Configure le système pour un nouvel utilisateur en créant `profile.md` via un dialogue interactif.
 
+## Modèle recommandé
+
+**Sonnet** suffit — Dialogue interactif et création de fichier structuré, sans recherche ni synthèse complexe.
+
 ## Workflow
 
 ### Étape 1 — Bienvenue

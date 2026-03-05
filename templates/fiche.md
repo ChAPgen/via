@@ -1,11 +1,14 @@
 # {{CONCEPT}}
 > Date : {{DATE}} | Statut : {{STATUT}} | Confiance : {{CONFIANCE}}
 
-## Hypothèse de départ
-{{HYPOTHESE}}
+## Entrée en matière
+{{3 courts paragraphes qui donnent envie de lire la suite :
 
-## En une phrase
-{{SYNTHESE_COURTE — si tu n'arrives pas à la formuler clairement, signale-le}}
+1. LE CONTEXTE (2-3 phrases) : Pourquoi ce sujet maintenant ? Accroche avec un fait, un paradoxe ou une tension.
+
+2. L'ENJEU (2-3 phrases) : Qu'est-ce qui est en jeu ? Pourquoi ça compte ? Du contexte vers la substance.
+
+3. L'HYPOTHÈSE (2-3 phrases) : La question que cette fiche explore. Formulée comme une ouverture, pas comme une conclusion. Si une hypothèse a été fournie par l'utilisateur, c'est ici qu'elle apparaît.}}
 
 ## Définitions à travers l'histoire
 {{3-5 définitions marquantes du concept, chronologiques :
@@ -25,7 +28,7 @@ Ne pas chercher l'exhaustivité. Privilégier les définitions qui montrent une 
 Ne lister QUE les frameworks réellement pertinents. Si moins de 3, c'est ok.}}
 
 ## Tensions & débats
-{{Ce qui fait débat. Positions qui s'opposent. L'hypothèse de départ est-elle confirmée, nuancée, contredite ?}}
+{{Ce qui fait débat. Positions qui s'opposent. L'hypothèse est-elle confirmée, nuancée, contredite ?}}
 
 ## Auteurs & sources clés
 {{Pour chaque auteur : pourquoi il compte + ouvrage/article de référence + lien web si disponible}}
